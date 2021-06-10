@@ -63,14 +63,20 @@ namespace BarkerSpeechTest
             try
             {
                 var config = SpeechConfig.FromSubscription(subscriptionKey, region);
-                config.EndpointId = subscriptionEndpointId;
+                // https://westus2.api.cognitive.microsoft.com/sts/v1.0/issuetoken
+                if (!string.IsNullOrWhiteSpace(subscriptionEndpointId))
+                {
+                    config.EndpointId = subscriptionEndpointId;
+                }
 
                 if (showConfidence)
                 {
                     config.OutputFormat = OutputFormat.Detailed;
                 }
 
-                using (var recognizer = new SpeechRecognizer(config))
+                // config.SetProperty(PropertyId.SpeechServiceConnection_SingleLanguageIdPriority, "Latency");
+
+                using (var recognizer = new SpeechRecognizer(config, "en-US"))
                 {
                     var result = await recognizer.RecognizeOnceAsync().ConfigureAwait(false);
 
